@@ -704,7 +704,7 @@
 
     // ============================================================================
     // 4. SCENARIO SUITE: 5 FOCUSED CORE SCENARIOS + 5 COLLAPSED EXTRAS
-    //    (Note: Valid Modulo-36 GSTINs used! e.g. 27AABCS1234F1ZR, 24AAACL5678M1Z5)
+    //    (Note: Valid Modulo-36 GSTINs used! e.g. 27AABCS1234F1ZR, 24AAACL5678M1Z2)
     // ============================================================================
     const defaultDocText = (name, gst, bank) =>
       `CERTIFICATE OF INCORPORATION & TAX REGISTRATION DOSSIER\nLegal Entity: ${name}\nTax Registration / GSTIN / VAT: ${gst}\nBank Confirmation Mandate: ${bank}\nStatus: ACTIVE & VERIFIED (2026)`;
@@ -737,7 +737,7 @@
           legalName: "Lotus Textiles Pvt Ltd",
           country: "IN",
           bankCountry: "IN",
-          taxId: "24AAACL5678M1Z5", // '5' is exact Mod-36 check digit for 24AAACL5678M1Z!
+          taxId: "24AAACL5678M1Z2", // '5' is exact Mod-36 check digit for 24AAACL5678M1Z!
           taxCertName: "Lotus Textiles Pvt Ltd",
           address: "12 Ring Rd, Surat, Gujarat",
           email: "info@lotustextiles.in",
@@ -745,7 +745,7 @@
           bankHolder: "R Mehta Trading Co",
           bankAcct: "60200987654321",
           bankCode: "ICIC0004321",
-          docText: defaultDocText("Lotus Textiles Pvt Ltd", "24AAACL5678M1Z5", "ICIC0004321 / Holder: R Mehta Trading Co")
+          docText: defaultDocText("Lotus Textiles Pvt Ltd", "24AAACL5678M1Z2", "ICIC0004321 / Holder: R Mehta Trading Co")
         }
       },
       {
@@ -756,7 +756,7 @@
           legalName: "Lotus Textiles Pvt Ltd",
           country: "IN",
           bankCountry: "IN",
-          taxId: "24AAACL5678M1Z5",
+          taxId: "24AAACL5678M1Z2",
           taxCertName: "Lotus Textiles Pvt Ltd",
           address: "12 Ring Rd, Surat, Gujarat",
           email: "info@lotustextiles.in",
@@ -764,7 +764,7 @@
           bankHolder: "Lotus Textiles Private Limited",
           bankAcct: "60200987654321",
           bankCode: "ICIC0004321",
-          docText: defaultDocText("Lotus Textiles Private Limited", "24AAACL5678M1Z5", "ICIC0004321 / Holder: Lotus Textiles Private Limited")
+          docText: defaultDocText("Lotus Textiles Private Limited", "24AAACL5678M1Z2", "ICIC0004321 / Holder: Lotus Textiles Private Limited")
         }
       },
       {
