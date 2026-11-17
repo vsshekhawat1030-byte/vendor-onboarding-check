@@ -1,0 +1,1547 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Vendor Onboarding Desk v3 · Real Doc Scanner, GSTIN Mod-36 & Safeguarded HITL</title>
+  <!-- Optional PDF.js for client-side PDF extraction (gracefully degrades if offline) -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js"></script>
+  <style>
+    :root {
+      --bg: #f4f6f9;
+      --card: #ffffff;
+      --sub-bg: #f8fafc;
+      --tx: #0f172a;
+      --mu: #64748b;
+      --bd: #e2e8f0;
+      --ac: #3b5bdb;
+      --ac-hover: #2f49b5;
+      --ac-soft: rgba(59, 91, 219, 0.08);
+      --ok: #0ca678;
+      --ok-bg: rgba(12, 166, 120, 0.1);
+      --wa: #d97706;
+      --wa-bg: rgba(217, 119, 6, 0.1);
+      --er: #e03131;
+      --er-bg: rgba(224, 49, 49, 0.1);
+      --in: #475569;
+      --in-bg: rgba(71, 85, 105, 0.1);
+      --radius: 11px;
+      --shadow: 0 1px 3px rgba(15, 23, 42, 0.05);
+    }
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --bg: #0b0f19;
+        --card: #131a29;
+        --sub-bg: #0e1420;
+        --tx: #f1f5f9;
+        --mu: #94a3b8;
+        --bd: #243047;
+        --ac: #5c7cfa;
+        --ac-hover: #748ffc;
+        --ac-soft: rgba(92, 124, 250, 0.12);
+        --ok: #20c997;
+        --ok-bg: rgba(32, 201, 151, 0.14);
+        --wa: #fcc419;
+        --wa-bg: rgba(252, 196, 25, 0.13);
+        --er: #ff6b6b;
+        --er-bg: rgba(255, 107, 107, 0.14);
+        --in: #94a3b8;
+        --in-bg: rgba(148, 163, 184, 0.14);
+        color-scheme: dark;
+      }
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0 auto;
+      background: var(--bg);
+      color: var(--tx);
+      font: 13.5px/1.45 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      padding: 14px 18px 28px;
+      max-width: 1340px;
+    }
+    code, pre, .mono {
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Courier New", monospace;
+    }
+    /* Header */
+    .topbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      flex-wrap: wrap;
+      gap: 10px;
+      padding-bottom: 12px;
+      margin-bottom: 14px;
+      border-bottom: 1px solid var(--bd);
+    }
+    h1 {
+      font-size: 19px;
+      font-weight: 800;
+      margin: 0;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+    h2 {
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: var(--mu);
+      margin: 0 0 9px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .sub {
+      color: var(--mu);
+      font-size: 12px;
+      margin: 3px 0 0;
+    }
+    .pill {
+      font-size: 11px;
+      font-weight: 600;
+      padding: 2px 8px;
+      border-radius: 999px;
+      background: var(--sub-bg);
+      border: 1px solid var(--bd);
+      color: var(--mu);
+      text-transform: none;
+      letter-spacing: 0;
+    }
+    .pill.accent {
+      background: var(--ac-soft);
+      color: var(--ac);
+      border-color: var(--ac);
+    }
+    /* Layout */
+    .grid {
+      display: grid;
+      grid-template-columns: 380px 1fr 1fr;
+      gap: 13px;
+      align-items: start;
+    }
+    @media (max-width: 1040px) {
+      .grid { grid-template-columns: 1fr; }
+    }
+    .card {
+      background: var(--card);
+      border: 1px solid var(--bd);
+      border-radius: var(--radius);
+      padding: 14px;
+      box-shadow: var(--shadow);
+    }
+    /* Form controls */
+    .fgrid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 6px 8px;
+    }
+    .fgrid .full { grid-column: 1 / -1; }
+    label {
+      display: block;
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--mu);
+      margin-bottom: 2px;
+    }
+    input[type="text"], select, textarea {
+      width: 100%;
+      font: inherit;
+      font-size: 12.5px;
+      padding: 5px 8px;
+      border: 1px solid var(--bd);
+      border-radius: 6px;
+      background: var(--sub-bg);
+      color: var(--tx);
+      outline: none;
+    }
+    input[type="text"]:focus, select:focus, textarea:focus {
+      border-color: var(--ac);
+    }
+    textarea.doc-scan {
+      font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+      font-size: 11.5px;
+      line-height: 1.38;
+      height: 68px;
+      resize: vertical;
+    }
+    .docs-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 4px 8px;
+      margin: 6px 0;
+    }
+    .docs-row label {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      color: var(--tx);
+      font-weight: 500;
+      font-size: 11.5px;
+      cursor: pointer;
+      margin: 0;
+    }
+    /* Dropzone */
+    .drop {
+      border: 1.5px dashed var(--bd);
+      border-radius: 8px;
+      padding: 9px 10px;
+      text-align: center;
+      cursor: pointer;
+      background: var(--sub-bg);
+      margin-bottom: 8px;
+      transition: border-color 0.15s, background 0.15s;
+      font-size: 12px;
+    }
+    .drop:hover, .drop.drag {
+      border-color: var(--ac);
+      background: var(--ac-soft);
+    }
+    /* Buttons */
+    button {
+      font: inherit;
+      font-size: 12px;
+      border: 1px solid var(--bd);
+      background: var(--card);
+      color: var(--tx);
+      padding: 6px 10px;
+      border-radius: 7px;
+      cursor: pointer;
+      text-align: left;
+      width: 100%;
+      margin-bottom: 5px;
+      transition: border-color 0.15s, background 0.15s;
+    }
+    button:hover { border-color: var(--ac); }
+    button.primary {
+      background: var(--ac);
+      color: #fff;
+      border-color: var(--ac);
+      text-align: center;
+      font-weight: 600;
+    }
+    button.primary:hover { background: var(--ac-hover); }
+    button.ok-btn {
+      background: var(--ok);
+      color: #fff;
+      border-color: var(--ok);
+      text-align: center;
+      font-weight: 600;
+    }
+    button.er-btn {
+      background: var(--er);
+      color: #fff;
+      border-color: var(--er);
+      text-align: center;
+      font-weight: 600;
+    }
+    button.sm {
+      width: auto;
+      padding: 4px 9px;
+      font-size: 11.5px;
+      margin: 0;
+      display: inline-block;
+    }
+    .scen-btn {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 9px;
+    }
+    /* Gate steps */
+    .st {
+      display: flex;
+      gap: 9px;
+      padding: 7px 8px;
+      border-radius: 8px;
+      border: 1px solid var(--bd);
+      background: var(--sub-bg);
+      margin-bottom: 6px;
+      animation: fadeSlide 0.2s ease-out;
+    }
+    @keyframes fadeSlide {
+      from { opacity: 0; transform: translateY(4px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    .b {
+      font-size: 10px;
+      font-weight: 800;
+      padding: 2px 7px;
+      border-radius: 6px;
+      height: fit-content;
+      white-space: nowrap;
+      border: 1px solid currentColor;
+      letter-spacing: 0.03em;
+    }
+    .pass, .APPROVED { color: var(--ok); background: var(--ok-bg); }
+    .warn, .PENDING  { color: var(--wa); background: var(--wa-bg); }
+    .fail, .REJECTED { color: var(--er); background: var(--er-bg); }
+    .info            { color: var(--in); background: var(--in-bg); }
+    .text-APPROVED { color: var(--ok); font-weight: 700; }
+    .text-PENDING  { color: var(--wa); font-weight: 700; }
+    .text-REJECTED { color: var(--er); font-weight: 700; }
+    /* Decision Banner & Pre */
+    .dec-box {
+      padding: 11px 13px;
+      border-radius: 9px;
+      border: 1px solid var(--bd);
+      margin-bottom: 10px;
+    }
+    .dec-title {
+      font-size: 22px;
+      font-weight: 800;
+      letter-spacing: -0.02em;
+      line-height: 1.15;
+    }
+    pre {
+      white-space: pre-wrap;
+      word-break: break-word;
+      background: var(--sub-bg);
+      border: 1px solid var(--bd);
+      border-radius: 7px;
+      padding: 9px 10px;
+      font-size: 11.5px;
+      line-height: 1.42;
+      margin: 4px 0 10px;
+      max-height: 185px;
+      overflow-y: auto;
+    }
+    /* HITL Safeguard Box */
+    .hitl-box {
+      margin-top: 10px;
+      padding: 11px 12px;
+      border-radius: 9px;
+      border: 1.5px solid var(--wa);
+      background: var(--wa-bg);
+    }
+    .hitl-err {
+      color: var(--er);
+      font-size: 11.5px;
+      font-weight: 600;
+      margin: 4px 0;
+      display: none;
+    }
+    /* KPI & Tables */
+    .kpis {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 10px;
+      margin-bottom: 14px;
+    }
+    @media (max-width: 680px) {
+      .kpis { grid-template-columns: 1fr 1fr; }
+    }
+    .kpi {
+      background: var(--sub-bg);
+      border: 1px solid var(--bd);
+      padding: 9px 12px;
+      border-radius: 9px;
+    }
+    .kpi b {
+      font-size: 21px;
+      display: block;
+      margin-top: 2px;
+    }
+    .dash-grid {
+      display: grid;
+      grid-template-columns: 5fr 7fr;
+      gap: 14px;
+    }
+    @media (max-width: 1040px) {
+      .dash-grid { grid-template-columns: 1fr; }
+    }
+    .table-wrap {
+      overflow-x: auto;
+      border: 1px solid var(--bd);
+      border-radius: 8px;
+    }
+    table {
+      border-collapse: collapse;
+      width: 100%;
+      font-size: 12px;
+    }
+    th, td {
+      text-align: left;
+      padding: 7px 9px;
+      border-bottom: 1px solid var(--bd);
+      white-space: nowrap;
+      vertical-align: top;
+    }
+    th {
+      background: var(--sub-bg);
+      color: var(--mu);
+      font-weight: 700;
+      font-size: 10.5px;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+    tr:last-child td { border-bottom: none; }
+    details {
+      margin-top: 6px;
+      border: 1px solid var(--bd);
+      border-radius: 8px;
+      padding: 6px 9px;
+      background: var(--sub-bg);
+    }
+    summary {
+      cursor: pointer;
+      font-size: 11.5px;
+      font-weight: 700;
+      color: var(--mu);
+      user-select: none;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Top Header -->
+  <header class="topbar">
+    <div>
+      <h1>
+        <span>Vendor Onboarding Desk v3</span>
+        <span class="pill accent">PS-2 Operations · Zero-Dependency Live Build</span>
+      </h1>
+      <div class="sub">
+        Real Document Text Scanner → Country &amp; OFAC SDN Entity Name Screen → GSTIN Modulo-36 Check Digit &amp; State/PAN Verification → Canonical Name Match → IBAN Mod-97 / ABA / IFSC Checksums → Domain Match → Vendor Master &amp; Safeguarded HITL Override.
+      </div>
+    </div>
+    <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
+      <label style="display:inline-flex;align-items:center;gap:5px;font-size:12px;color:var(--tx);cursor:pointer;margin:0;background:var(--card);padding:5px 10px;border-radius:7px;border:1px solid var(--bd)">
+        <input type="checkbox" id="pace" checked style="width:auto;margin:0">
+        <span>Step-by-step UI pacing (180ms/gate)</span>
+      </label>
+      <button type="button" class="sm" id="dlSampleJson">⬇ Sample Vendor JSON</button>
+    </div>
+  </header>
+
+  <!-- Main 3-Column Grid -->
+  <div class="grid">
+
+    <!-- COLUMN 1: SUBMISSION & REAL DOCUMENT SCANNER -->
+    <section class="card">
+      <h2>
+        <span>1 · Submission &amp; Real Document Text Scanner</span>
+        <span class="pill" id="docMode">Ready</span>
+      </h2>
+
+      <!-- Drag & Drop Upload -->
+      <div class="drop" id="dz" onclick="document.getElementById('fileIn').click()">
+        <b>📎 Drop Compliance PDF or Vendor JSON</b> (or click to browse)
+        <div class="sub" style="font-size:11px">Extracts raw PDF text via PDF.js directly into the live scanner box below</div>
+        <div id="fileMsg" style="font-size:11px;color:var(--ac);font-weight:600;margin-top:2px"></div>
+      </div>
+      <input type="file" id="fileIn" accept=".json,.pdf,.txt" style="display:none">
+
+      <!-- Vendor Form Fields -->
+      <div id="form" class="fgrid"></div>
+
+      <!-- Attached Checkboxes -->
+      <div style="margin-top:7px">
+        <label>Declared Attached Documents</label>
+        <div id="docs" class="docs-row"></div>
+      </div>
+
+      <!-- REAL DOCUMENT TEXT SCANNER (Replaces fake dropdown) -->
+      <div style="margin-top:6px">
+        <label style="display:flex;justify-content:space-between">
+          <span>Extracted Document Text (Scanned Live by Gate 1)</span>
+          <span style="font-weight:400;font-size:10.5px">Editable / Populated by PDF</span>
+        </label>
+        <textarea id="docText" class="doc-scan" placeholder="Paste or upload PDF text here. Gate 1 scans this text for 'Certificate of Incorporation', 'GSTIN', 'W-9', 'Bank' vs 'Tax Invoice' or 'Expired' dates..."></textarea>
+      </div>
+
+      <button type="button" class="primary" id="runBtn" style="margin-top:6px;padding:8px">
+        ▶ Run 7-Gate Compliance Review
+      </button>
+
+      <!-- FOCUSED SCOPE: 5 Core Demo Scenarios + 5 Collapsed Extras -->
+      <div style="margin-top:11px;padding-top:10px;border-top:1px solid var(--bd)">
+        <h2>
+          <span>Core Live Demo Scenarios (5 Cases)</span>
+          <span style="font-size:10px;font-weight:500;text-transform:none">Recommended for 5-min video</span>
+        </h2>
+        <div id="coreScenarios"></div>
+
+        <details>
+          <summary>Extra Edge Cases (5 Additional Scenarios for Q&amp;A)</summary>
+          <div id="extraScenarios" style="margin-top:6px"></div>
+        </details>
+
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-top:8px">
+          <button type="button" class="primary" id="runCoreBtn" style="margin:0">▶ Run 5 Core Demo Cases</button>
+          <button type="button" id="resetBtn" style="margin:0;text-align:center">↺ Reset Clean State</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- COLUMN 2: SEQUENTIAL COMPLIANCE GATES -->
+    <section class="card" style="min-height:650px;display:flex;flex-direction:column">
+      <h2>
+        <span>2 · Live Verification Gates (7 Stages)</span>
+        <span class="pill" id="gateStatus">Idle</span>
+      </h2>
+      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-bottom:10px;padding:7px 9px;background:var(--sub-bg);border:1px solid var(--bd);border-radius:8px;font-size:11px">
+        <div><span style="color:var(--mu);display:block">Gate 1 &amp; 2</span><b>Doc Scan + SDN Entity</b></div>
+        <div><span style="color:var(--mu);display:block">Gate 3 &amp; 4</span><b>GSTIN Mod-36 + Name</b></div>
+        <div><span style="color:var(--mu);display:block">Gate 5, 6 &amp; 7</span><b>IBAN/ABA + BEC Guard</b></div>
+      </div>
+      <div id="live" style="flex:1">
+        <div class="sub" style="text-align:center;padding:60px 20px">
+          Select one of the <b>5 Core Live Demo Scenarios</b> on the left or upload a PDF to watch each gate execute with full reasoning.
+        </div>
+      </div>
+    </section>
+
+    <!-- COLUMN 3: DECISION, VENDOR COMMS & SAFEGUARDED HITL -->
+    <section class="card" style="min-height:650px;display:flex;flex-direction:column">
+      <h2>
+        <span>3 · Decision, Vendor Email &amp; Safeguarded HITL</span>
+        <span class="pill accent mono" id="vidBadge">—</span>
+      </h2>
+      <div id="out" style="flex:1">
+        <div class="sub" style="text-align:center;padding:60px 20px">
+          No onboarding review run yet. Output status (<b>APPROVED</b> / <b>PENDING</b> / <b>REJECTED</b>), internal compliance notes, vendor email draft, and safeguarded human override controls appear here.
+        </div>
+      </div>
+    </section>
+
+  </div>
+
+  <!-- BOTTOM DASHBOARD: VENDOR MASTER & AUDIT TRAIL -->
+  <section class="card" style="margin-top:14px">
+    <h2>
+      <span>Compliance Dashboard, Vendor Master &amp; Audit Trail</span>
+      <span class="pill">Clean In-Memory Session (Zero Stale Storage Leaks)</span>
+    </h2>
+
+    <div class="kpis" id="k"></div>
+
+    <div class="dash-grid">
+      <div>
+        <h2><span>Vendor Master Ledger</span><span style="font-size:10px;text-transform:none">Tracks APPROVED, PENDING &amp; REJECTED records</span></h2>
+        <div class="table-wrap"><table id="m"></table></div>
+      </div>
+      <div>
+        <h2><span>Onboarding Audit Trail &amp; Override History</span><span style="font-size:10px;text-transform:none">Click any PENDING row to load into Panel 3</span></h2>
+        <div class="table-wrap"><table id="h"></table></div>
+      </div>
+    </div>
+  </section>
+
+  <script>
+    // ============================================================================
+    // 1. REFERENCE DATA: COUNTRIES, SANCTIONS (COUNTRY + SDN ENTITY WATCHLIST), GSTIN
+    // ============================================================================
+    const CC = ['IN', 'US', 'GB', 'DE', 'AE', 'IR'];
+    const SANC_COUNTRIES = ['IR', 'KP', 'SY', 'CU'];
+    // Fix 7: Entity-level OFAC SDN / Watchlist screening (catches sanctioned entities even in non-sanctioned countries like AE or GB)
+    const SDN_ENTITIES = [
+      { tokens: ['persian', 'gulf', 'trading'], list: 'OFAC SDN — Iran Shipping & Trade Network' },
+      { tokens: ['albaraka', 'exchange'], list: 'OFAC SDN — Blocked Financial Facilitator' },
+      { tokens: ['crimson', 'star', 'aviation'], list: 'UK/EU Consolidated Sanctions Watchlist' }
+    ];
+    const FREE_EMAIL = /@(gmail|yahoo|outlook|hotmail|proton|icloud|aol|zoho|ymail)\./i;
+
+    const IN_STATES = {
+      "07": ["delhi", "new delhi", "dl"],
+      "19": ["west bengal", "kolkata", "wb"],
+      "24": ["gujarat", "surat", "ahmedabad", "vadodara", "ankleshwar", "gj"],
+      "27": ["maharashtra", "mumbai", "pune", "nagpur", "thane", "mh"],
+      "29": ["karnataka", "bengaluru", "bangalore", "mysuru", "ka"],
+      "33": ["tamil nadu", "chennai", "coimbatore", "tn"],
+      "36": ["telangana", "hyderabad", "tg", "ts"],
+      "09": ["uttar pradesh", "noida", "lucknow", "up"],
+      "06": ["haryana", "gurugram", "gurgaon", "faridabad", "hr"]
+    };
+
+    const F = [
+      ['legalName', 'Legal Company Name', '', 'full'],
+      ['country', 'Reg. Country', 's', ''],
+      ['bankCountry', 'Bank Country', 's', ''],
+      ['taxId', 'Tax ID (GSTIN / EIN / VAT)', '', ''],
+      ['taxCertName', 'Entity Name on Tax Certificate', '', ''],
+      ['address', 'Registered Address (City, State)', '', 'full'],
+      ['email', 'Corporate Contact Email', '', ''],
+      ['website', 'Company Website Domain', '', ''],
+      ['bankHolder', 'Name on Bank Letter / Cheque', '', 'full'],
+      ['bankAcct', 'Account Number / IBAN', '', ''],
+      ['bankCode', 'IFSC / ABA Routing Code', '', '']
+    ];
+
+    const DL = {
+      incorp: 'Certificate of Incorporation',
+      tax: 'Tax Registration Certificate',
+      bank: 'Bank Letter / Cancelled Cheque',
+      w9: 'IRS Form W-9 (US Only)'
+    };
+
+    const TAX_FMT = {
+      IN: [/^(0[1-9]|[12]\d|3[0-8])[A-Z]{5}\d{4}[A-Z][1-9A-Z]Z[0-9A-Z]$/, '15-char GSTIN (state 01-38 + 10-char PAN + entity + Z + Mod-36 check digit)'],
+      US: [/^\d{2}-?\d{7}$/, '9-digit federal EIN, e.g. 12-3456789'],
+      GB: [/^GB\d{9}$/, 'UK VAT number (GB + 9 digits)'],
+      DE: [/^DE\d{9}$/, 'German VAT number (DE + 9 digits)'],
+      AE: [/^\d{15}$/, 'UAE TRN (15 digits)']
+    };
+
+    // ============================================================================
+    // 2. MATHEMATICAL CHECKSUMS: GSTIN MODULO-36, IBAN MODULO-97, US ABA 3-7-1
+    // ============================================================================
+    const $ = id => document.getElementById(id);
+    const N = s => (s || '').replace(/[^A-Z0-9]/gi, '').toUpperCase();
+    const sl = ms => new Promise(r => setTimeout(r, ms));
+
+    // Fix 7: Official Indian GSTIN Modulo-36 Check Digit Calculator (15th character)
+    const GST_CHARS = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+    function calcGstinCheckDigit(gst14) {
+      let sum = 0;
+      for (let i = 0; i < 14; i++) {
+        const code = GST_CHARS.indexOf(gst14[i]);
+        if (code < 0) return null;
+        const factor = (i % 2 === 0) ? 1 : 2;
+        const prod = code * factor;
+        sum += Math.floor(prod / 36) + (prod % 36);
+      }
+      const rem = sum % 36;
+      return GST_CHARS[(36 - rem) % 36];
+    }
+
+    // ISO 13616 IBAN Modulo-97 Checksum
+    function ibanOk(s) {
+      s = N(s);
+      if (!/^[A-Z]{2}\d{2}[A-Z0-9]{10,30}$/.test(s)) return false;
+      let n = '';
+      for (const c of s.slice(4) + s.slice(0, 4)) {
+        n += /[A-Z]/.test(c) ? c.charCodeAt(0) - 55 : c;
+      }
+      let r = 0;
+      for (const d of n) r = (r * 10 + +d) % 97;
+      return r === 1;
+    }
+
+    // US ABA Federal Reserve 3-7-1 Routing Checksum
+    function abaOk(s) {
+      if (!/^\d{9}$/.test(s)) return false;
+      const d = [...s].map(Number);
+      return (3 * (d[0] + d[3] + d[6]) + 7 * (d[1] + d[4] + d[7]) + (d[2] + d[5] + d[8])) % 10 === 0;
+    }
+
+    // Canonical Entity Name Comparison (strips legal suffixes, flags extra regional/subsidiary qualifiers)
+    const SUFFIX_RE = /\b(private|pvt|limited|ltd|llc|inc|incorporated|gmbh|corp|corporation|co|company|llp|plc|ag|bv)\b/g;
+    function normCoreTokens(s) {
+      return (s || '')
+        .toLowerCase()
+        .replace(/&/g, ' and ')
+        .replace(/[^a-z0-9 ]/g, ' ')
+        .replace(SUFFIX_RE, ' ')
+        .split(/\s+/)
+        .filter(Boolean);
+    }
+    function compareEntityNames(legal, other) {
+      const A = normCoreTokens(legal), B = normCoreTokens(other);
+      if (!A.length || !B.length) return { exact: false, score: 0, extra: [] };
+      const setA = new Set(A), setB = new Set(B);
+      const extraInB = [...setB].filter(x => !setA.has(x));
+      const missingFromA = [...setA].filter(x => !setB.has(x));
+      const inter = [...setA].filter(x => setB.has(x)).length;
+      const union = new Set([...A, ...B]).size;
+      return {
+        exact: extraInB.length === 0 && missingFromA.length === 0,
+        score: inter / union,
+        extra: [...extraInB, ...missingFromA]
+      };
+    }
+
+    // ============================================================================
+    // 3. REAL DOCUMENT TEXT SCANNER (Fixes Issue #1 — No Fake Dropdown)
+    // ============================================================================
+    function inspectDocumentText(rawText) {
+      const t = (rawText || '').trim();
+      if (!t) {
+        return {
+          status: 'warn',
+          kind: 'empty',
+          summary: 'No extracted document text provided for content inspection'
+        };
+      }
+      const hasInvoiceTrigger = /\b(tax\s+invoice|commercial\s+invoice|invoice\s*(?:no|number|#)|total\s*(?:amount\s*)?due|subtotal)\b/i.test(t);
+      const hasComplianceTrigger = /\b(certificate\s+of\s+incorporation|tax\s+registration|form\s+gst|gstin|form\s+w-9|employer\s+identification|cancelled\s+cheque|bank\s+mandate|bank\s+confirmation)\b/i.test(t);
+      const hasExpiredTrigger = /\b(expired|valid\s+until\s+202[0-4]|status\s*:\s*cancelled|revoked)\b/i.test(t);
+
+      if (hasInvoiceTrigger && !hasComplianceTrigger) {
+        return {
+          status: 'fail',
+          kind: 'wrong_invoice',
+          summary: 'Real text scan detected a Sales/Tax Invoice ("TAX INVOICE / Total Due") instead of a Compliance Certificate'
+        };
+      }
+      if (hasExpiredTrigger) {
+        return {
+          status: 'fail',
+          kind: 'expired',
+          summary: 'Real text scan detected an expired or cancelled registration date in document text'
+        };
+      }
+      if (hasComplianceTrigger) {
+        const found = [];
+        if (/certificate\s+of\s+incorporation|cin\b/i.test(t)) found.push('Incorporation/CIN');
+        if (/gstin|tax\s+registration|vat|form\s+w-9|ein\b/i.test(t)) found.push('Tax/GSTIN/W-9');
+        if (/bank|ifsc|iban|routing|cheque/i.test(t)) found.push('Bank Mandate');
+        return {
+          status: 'pass',
+          kind: 'valid',
+          summary: `Scanned ${t.length} chars — verified keywords: [${found.join(', ')}]`
+        };
+      }
+      return {
+        status: 'warn',
+        kind: 'unrecognized',
+        summary: `Scanned ${t.length} chars — no standard compliance keywords (Certificate/GSTIN/W-9/Bank) found`
+      };
+    }
+
+    // ============================================================================
+    // 4. SCENARIO SUITE: 5 FOCUSED CORE SCENARIOS + 5 COLLAPSED EXTRAS
+    //    (Note: Valid Modulo-36 GSTINs used! e.g. 27AABCS1234F1ZR, 24AAACL5678M1Z5)
+    // ============================================================================
+    const defaultDocText = (name, gst, bank) =>
+      `CERTIFICATE OF INCORPORATION & TAX REGISTRATION DOSSIER\nLegal Entity: ${name}\nTax Registration / GSTIN / VAT: ${gst}\nBank Confirmation Mandate: ${bank}\nStatus: ACTIVE & VERIFIED (2026)`;
+
+    const CORE_SCENARIOS = [
+      {
+        label: "1. Happy Path · Clean Indian Vendor (Mod-36 GSTIN)",
+        badge: "APPROVED",
+        docs: ['incorp', 'tax', 'bank'],
+        fields: {
+          legalName: "Sunrise Packaging Pvt Ltd",
+          country: "IN",
+          bankCountry: "IN",
+          taxId: "27AABCS1234F1ZR", // 'R' is exact Mod-36 check digit!
+          taxCertName: "Sunrise Packaging Private Limited",
+          address: "Plot 4, MIDC Chakan, Pune, Maharashtra",
+          email: "accounts@sunrisepack.in",
+          website: "sunrisepack.in",
+          bankHolder: "SUNRISE PACKAGING PRIVATE LIMITED",
+          bankAcct: "50100123456789",
+          bankCode: "HDFC0001234",
+          docText: defaultDocText("Sunrise Packaging Private Limited", "27AABCS1234F1ZR", "HDFC0001234 / Acct 50100123456789")
+        }
+      },
+      {
+        label: "2A. Bank Holder ≠ Company Name (Step 1 → PENDING)",
+        badge: "PENDING",
+        docs: ['incorp', 'tax', 'bank'],
+        fields: {
+          legalName: "Lotus Textiles Pvt Ltd",
+          country: "IN",
+          bankCountry: "IN",
+          taxId: "24AAACL5678M1Z5", // '5' is exact Mod-36 check digit for 24AAACL5678M1Z!
+          taxCertName: "Lotus Textiles Pvt Ltd",
+          address: "12 Ring Rd, Surat, Gujarat",
+          email: "info@lotustextiles.in",
+          website: "lotustextiles.in",
+          bankHolder: "R Mehta Trading Co",
+          bankAcct: "60200987654321",
+          bankCode: "ICIC0004321",
+          docText: defaultDocText("Lotus Textiles Pvt Ltd", "24AAACL5678M1Z5", "ICIC0004321 / Holder: R Mehta Trading Co")
+        }
+      },
+      {
+        label: "2B. Corrected Resubmission (Step 2 → APPROVED Rev 2)",
+        badge: "APPROVED",
+        docs: ['incorp', 'tax', 'bank'],
+        fields: {
+          legalName: "Lotus Textiles Pvt Ltd",
+          country: "IN",
+          bankCountry: "IN",
+          taxId: "24AAACL5678M1Z5",
+          taxCertName: "Lotus Textiles Pvt Ltd",
+          address: "12 Ring Rd, Surat, Gujarat",
+          email: "info@lotustextiles.in",
+          website: "lotustextiles.in",
+          bankHolder: "Lotus Textiles Private Limited",
+          bankAcct: "60200987654321",
+          bankCode: "ICIC0004321",
+          docText: defaultDocText("Lotus Textiles Private Limited", "24AAACL5678M1Z5", "ICIC0004321 / Holder: Lotus Textiles Private Limited")
+        }
+      },
+      {
+        label: "3. Fraud Ring · Bank Account Shared with Active Vendor",
+        badge: "REJECTED",
+        docs: ['incorp', 'tax', 'bank'],
+        fields: {
+          legalName: "Pinnacle Freight Ltd",
+          country: "GB",
+          bankCountry: "GB",
+          taxId: "GB987654321",
+          taxCertName: "Pinnacle Freight Ltd",
+          address: "8 Dock Rd, London",
+          email: "fin@pinnaclefreight.co.uk",
+          website: "pinnaclefreight.co.uk",
+          bankHolder: "Pinnacle Freight Ltd",
+          bankAcct: "GB82WEST12345698765432", // Collides with V-1000 Northwind Logistics!
+          bankCode: "",
+          docText: defaultDocText("Pinnacle Freight Ltd", "GB987654321", "IBAN GB82WEST12345698765432")
+        }
+      },
+      {
+        label: "4. BEC Guard · Active Vendor Bank Change + Call-Back HITL",
+        badge: "PENDING",
+        docs: ['incorp', 'tax', 'bank'],
+        fields: {
+          legalName: "Northwind Logistics",
+          country: "GB",
+          bankCountry: "DE",
+          taxId: "GB123456789",
+          taxCertName: "Northwind Logistics",
+          address: "1 Wharf St, Leeds",
+          email: "ar@northwind.co.uk",
+          website: "northwind.co.uk",
+          bankHolder: "Northwind Logistics",
+          bankAcct: "DE89370400440532013000",
+          bankCode: "",
+          docText: "TAX INVOICE #INV-2026-0842\nBilled To: Acme Corp\nSubtotal: $15,050.00\nTotal Amount Due: $16,291.63"
+        }
+      }
+    ];
+
+    const EXTRA_SCENARIOS = [
+      {
+        label: "E1. Wrong File Attached · Sales Invoice Uploaded Instead of W-9",
+        badge: "PENDING",
+        docs: ['incorp', 'bank'],
+        fields: {
+          legalName: "Pacific Cloud Services LLC",
+          country: "US",
+          bankCountry: "US",
+          taxId: "12-3456789",
+          taxCertName: "Pacific Cloud Services LLC",
+          address: "500 Market St, San Francisco, CA",
+          email: "ap@pacificcloud.com",
+          website: "pacificcloud.com",
+          bankHolder: "Pacific Cloud Services LLC",
+          bankAcct: "000123456789",
+          bankCode: "021000021",
+          docText: "COMMERCIAL TAX INVOICE\nInvoice Number: INV-9941\nSubtotal: $4,200.00\nTotal Due: $4,536.00"
+        }
+      },
+      {
+        label: "E2. GSTIN Check-Digit Typo (15th Char '5' vs Expected 'R')",
+        badge: "PENDING",
+        docs: ['incorp', 'tax', 'bank'],
+        fields: {
+          legalName: "Sunrise Packaging Pvt Ltd",
+          country: "IN",
+          bankCountry: "IN",
+          taxId: "27AABCS1234F1Z5", // Bad Mod-36 check digit ('5' instead of 'R')
+          taxCertName: "Sunrise Packaging Private Limited",
+          address: "Plot 4, MIDC, Pune, Maharashtra",
+          email: "accounts@sunrisepack.in",
+          website: "sunrisepack.in",
+          bankHolder: "SUNRISE PACKAGING PRIVATE LIMITED",
+          bankAcct: "50100123456789",
+          bankCode: "HDFC0001234",
+          docText: defaultDocText("Sunrise Packaging Private Limited", "27AABCS1234F1Z5", "HDFC0001234")
+        }
+      },
+      {
+        label: "E3. GSTIN State Mismatch · MH Code (27) vs Gujarat Address",
+        badge: "PENDING",
+        docs: ['incorp', 'tax', 'bank'],
+        fields: {
+          legalName: "Western Polymers Pvt Ltd",
+          country: "IN",
+          bankCountry: "IN",
+          taxId: "27AAACW1122K1ZI", // 'I' is valid Mod-36 check digit, but '27' conflicts with Gujarat!
+          taxCertName: "Western Polymers Pvt Ltd",
+          address: "GIDC Ankleshwar, Surat, Gujarat",
+          email: "finance@westernpolymers.in",
+          website: "westernpolymers.in",
+          bankHolder: "Western Polymers Private Limited",
+          bankAcct: "50200111222333",
+          bankCode: "HDFC0000240",
+          docText: defaultDocText("Western Polymers Pvt Ltd", "27AAACW1122K1ZI", "HDFC0000240")
+        }
+      },
+      {
+        label: "E4. SDN Entity Watchlist Hit (Sanctioned Entity in UAE)",
+        badge: "REJECTED",
+        docs: ['incorp', 'tax', 'bank'],
+        fields: {
+          legalName: "AlBaraka Exchange & Trading LLC",
+          country: "AE",
+          bankCountry: "AE",
+          taxId: "100234567890123",
+          taxCertName: "AlBaraka Exchange & Trading LLC",
+          address: "Deira Tower, Dubai, UAE",
+          email: "settlements@albaraka-ex.ae",
+          website: "albaraka-ex.ae",
+          bankHolder: "AlBaraka Exchange & Trading LLC",
+          bankAcct: "AE070331234567890123456",
+          bankCode: "",
+          docText: defaultDocText("AlBaraka Exchange & Trading LLC", "100234567890123", "AE070331234567890123456")
+        }
+      },
+      {
+        label: "E5. Domain Spoof + Subsidiary Name ('Dubai') Spoof",
+        badge: "PENDING",
+        docs: ['incorp', 'tax', 'bank'],
+        fields: {
+          legalName: "Sunrise Packaging Pvt Ltd",
+          country: "IN",
+          bankCountry: "IN",
+          taxId: "27AABCS1234F1ZR",
+          taxCertName: "Sunrise Packaging Pvt Ltd",
+          address: "Mumbai, Maharashtra",
+          email: "ap@sunrise-holdings-offshore.com",
+          website: "sunrisepack.in",
+          bankHolder: "Sunrise Packaging Dubai Pvt Ltd",
+          bankAcct: "50100999988877",
+          bankCode: "HDFC0001234",
+          docText: defaultDocText("Sunrise Packaging Pvt Ltd", "27AABCS1234F1ZR", "HDFC0001234")
+        }
+      }
+    ];
+
+    // ============================================================================
+    // 5. STATE MANAGEMENT: CLEAN IN-MEMORY START (Fixes Issue #8 — No Stale Storage)
+    // ============================================================================
+    const SEED = () => ({
+      GB123456789: {
+        id: "V-1000",
+        name: "Northwind Logistics",
+        country: "GB",
+        tk: "GB123456789",
+        bk: "GB82WEST12345698765432",
+        status: "APPROVED",
+        rev: 1,
+        rejectReason: null
+      }
+    });
+
+    let M = SEED();
+    let H = [];
+    let seq = 1001;
+
+    function nextVendorId() {
+      const existingMax = Object.values(M).reduce((mx, v) => {
+        const n = parseInt(String(v.id || '').replace(/\D/g, ''), 10);
+        return isNaN(n) ? mx : Math.max(mx, n);
+      }, 1000);
+      seq = Math.max(seq, existingMax + 1);
+      return 'V-' + seq++;
+    }
+
+    // ============================================================================
+    // 6. 7-GATE COMPLIANCE ENGINE (Fixes Issues #1, #2, #3, #7)
+    // ============================================================================
+    async function addGate(name, status, msg) {
+      if ($('pace').checked) await sl(180);
+      $('live').insertAdjacentHTML(
+        'beforeend',
+        `<div class="st">
+          <span class="b ${status}">${status.toUpperCase()}</span>
+          <div style="flex:1;min-width:0">
+            <div style="font-weight:700">${name}</div>
+            <div class="sub" style="margin:1px 0 0;word-break:break-word">${msg}</div>
+          </div>
+        </div>`
+      );
+    }
+
+    async function runReview() {
+      const f = getF();
+      const docs = dock();
+      $('live').innerHTML = '';
+      $('out').innerHTML = '<div class="sub" style="text-align:center;padding:40px">Running 7 compliance gates…</div>';
+      $('gateStatus').textContent = 'Running…';
+
+      const hard = [], need = [], note = [];
+      let rev = 1;
+
+      // GATE 1: Completeness + REAL Document Text Scanner
+      const reqFields = ['legalName', 'country', 'taxId', 'taxCertName', 'address', 'email', 'bankHolder', 'bankAcct'];
+      const miss = reqFields.filter(k => !(f[k] || '').trim());
+      const reqDocs = ['incorp', 'bank', f.country === 'US' ? 'w9' : 'tax'];
+      const md = reqDocs.filter(d => !docs.includes(d));
+
+      miss.forEach(k => need.push('Provide mandatory field: ' + F.find(x => x[0] === k)[1]));
+      md.forEach(d => need.push('Attach required document: ' + DL[d]));
+
+      const scan = inspectDocumentText(f.docText);
+      if (scan.kind === 'wrong_invoice') {
+        need.push('Document text scan detected a Sales/Tax Invoice instead of a Compliance Certificate. Upload your official Tax Registration / W-9 PDF');
+        note.push(scan.summary);
+      } else if (scan.kind === 'expired') {
+        need.push('Uploaded certificate appears expired or revoked. Upload a current compliance certificate');
+        note.push(scan.summary);
+      } else if (scan.kind === 'empty' || scan.kind === 'unrecognized') {
+        need.push('Provide machine-readable compliance certificate text (Incorporation / GSTIN / W-9 / Bank confirmation)');
+        note.push(scan.summary);
+      }
+
+      const g1Stat = (miss.length || md.length || scan.status !== 'pass') ? (scan.status === 'fail' ? 'fail' : 'warn') : 'pass';
+      const g1Msg = (miss.length || md.length)
+        ? `Missing ${miss.length} field(s), ${md.length} doc checkbox(es) · ${scan.summary}`
+        : `All ${reqFields.length} fields & ${reqDocs.length} doc checkboxes present · ${scan.summary}`;
+      await addGate('1. Completeness & Real Document Text Scan', g1Stat, g1Msg);
+
+      // GATE 2: Sanctions Screen (Jurisdiction Blocklist + OFAC SDN Entity Name Watchlist)
+      const sc = [f.country, f.bankCountry].filter(c => SANC_COUNTRIES.includes(c));
+      const vTokens = normCoreTokens(f.legalName + ' ' + f.bankHolder);
+      const sdnHit = SDN_ENTITIES.find(ent => ent.tokens.every(t => vTokens.includes(t)));
+
+      if (sc.length) {
+        hard.push(`Sanctioned country jurisdiction (${sc[0]})`);
+        await addGate('2. Country & OFAC SDN Entity Screen', 'fail', `Jurisdiction ${sc[0]} is on the comprehensive country sanctions blocklist`);
+      } else if (sdnHit) {
+        hard.push(`Entity name matched sanctions watchlist (${sdnHit.list})`);
+        await addGate('2. Country & OFAC SDN Entity Screen', 'fail', `Entity "${f.legalName}" matched watchlist: ${sdnHit.list}`);
+      } else {
+        await addGate('2. Country & OFAC SDN Entity Screen', 'pass', `Countries (${f.country}/${f.bankCountry || f.country}) & entity name clear of OFAC SDN watchlist`);
+      }
+
+      // GATE 3: Tax ID Format + Official Indian GSTIN Modulo-36 Check Digit & State/PAN Check
+      const tid = N(f.taxId), tx = TAX_FMT[f.country];
+      let taxStat = 'pass', taxMsg = '';
+      if (!tid) {
+        taxStat = 'warn';
+        taxMsg = 'No Tax ID provided';
+      } else if (!tx) {
+        taxStat = 'info';
+        taxMsg = `No format rule for ${f.country} — manual check`;
+      } else if (!tx[0].test(f.taxId.toUpperCase().replace(/\s/g, ''))) {
+        taxStat = 'fail';
+        taxMsg = `"${f.taxId}" failed ${f.country} format check (Expected: ${tx[1]})`;
+        need.push(`Correct your ${f.country} Tax ID "${f.taxId}". Expected: ${tx[1]}`);
+      } else {
+        taxMsg = `Valid ${f.country} Tax ID format (${tid})`;
+        if (f.country === 'IN') {
+          const stCode = tid.slice(0, 2);
+          const panType = tid[5]; // 4th char of PAN: C=Company
+          const expectedCheckDigit = calcGstinCheckDigit(tid.slice(0, 14));
+          const actualCheckDigit = tid[14];
+          const addrLow = (f.address || '').toLowerCase();
+
+          let conflictedState = null;
+          for (const [code, kws] of Object.entries(IN_STATES)) {
+            if (code !== stCode && kws.some(w => w.length > 2 && addrLow.includes(w))) {
+              conflictedState = { code, name: kws[0].toUpperCase() };
+              break;
+            }
+          }
+
+          if (expectedCheckDigit && actualCheckDigit !== expectedCheckDigit) {
+            taxStat = 'fail';
+            taxMsg = `GSTIN Modulo-36 check digit failed: 15th char is '${actualCheckDigit}', expected '${expectedCheckDigit}' for ${tid.slice(0, 14)}`;
+            need.push(`GSTIN "${tid}" failed Modulo-36 checksum validation (15th character check digit is '${actualCheckDigit}', expected '${expectedCheckDigit}'). Please check for typos`);
+            note.push(`GSTIN Mod-36 check-digit mismatch ('${actualCheckDigit}' vs '${expectedCheckDigit}')`);
+          } else if (conflictedState) {
+            taxStat = 'fail';
+            taxMsg = `GSTIN state code ${stCode} conflicts with registered address in ${conflictedState.name} (expected state code ${conflictedState.code})`;
+            need.push(`GSTIN state prefix (${stCode}) conflicts with registered address in ${conflictedState.name} (${conflictedState.code}). Submit GST certificate for your registered state`);
+            note.push(`GSTIN state prefix mismatch (${stCode} vs ${conflictedState.code})`);
+          } else if (/\b(pvt|private|ltd|limited)\b/i.test(f.legalName) && panType !== 'C') {
+            taxStat = 'warn';
+            taxMsg = `GSTIN 6th char '${panType}' is non-corporate PAN, but entity is Pvt Ltd (expected 'C')`;
+            need.push(`Confirm PAN entity type in GSTIN (${tid}): 6th char is '${panType}', expected 'C' for a Company`);
+          } else {
+            taxMsg += ` · State ${stCode}, PAN type '${panType}' & Mod-36 check digit ('${actualCheckDigit}') verified`;
+          }
+        }
+      }
+      await addGate('3. Tax ID, State & Modulo-36 Check Digit', taxStat, taxMsg);
+
+      // GATE 4: Cross-Document Canonical Name Consistency
+      let nameStat = 'pass', nameMsgs = [];
+      for (const [label, val] of [['Tax Certificate', f.taxCertName], ['Bank Holder', f.bankHolder]]) {
+        if (!(val || '').trim()) {
+          nameStat = 'warn';
+          nameMsgs.push(`${label}: missing`);
+          continue;
+        }
+        const cmp = compareEntityNames(f.legalName, val);
+        if (cmp.exact) {
+          nameMsgs.push(`${label}: 100% canonical match`);
+        } else if (cmp.score >= 0.65 && cmp.extra.length > 0) {
+          nameStat = 'fail';
+          nameMsgs.push(`${label}: extra qualifier [${cmp.extra.join(', ')}]`);
+          need.push(`${label} ("${val}") contains unverified regional/subsidiary qualifier [${cmp.extra.join(', ')}] not in legal name "${f.legalName}"`);
+          note.push(`Subsidiary/regional qualifier divergence on ${label}: [${cmp.extra.join(', ')}]`);
+        } else {
+          nameStat = 'fail';
+          nameMsgs.push(`${label}: ${(cmp.score * 100).toFixed(0)}% match ("${val}")`);
+          need.push(
+            label === 'Bank Holder'
+              ? `Bank account must be in the exact company legal name "${f.legalName}" (submitted holder: "${val}"). Third-party accounts are blocked`
+              : `Tax certificate name ("${val}") does not match legal name ("${f.legalName}")`
+          );
+          note.push(`Third-party name mismatch on ${label} ("${val}")`);
+        }
+      }
+      await addGate('4. Cross-Document Name Consistency', nameStat, nameMsgs.join(' · '));
+
+      // GATE 5: Bank Checksums (IBAN Mod-97 / US ABA 3-7-1 / Indian IFSC) & Domicile
+      const bc = f.bankCountry || f.country;
+      let bm = '', bs = 'pass';
+      const acct = (f.bankAcct || '').trim();
+      if (!acct) {
+        bs = 'warn';
+        bm = 'No bank account number provided';
+      } else if (['GB', 'DE', 'AE'].includes(bc)) {
+        if (ibanOk(acct)) bm = `ISO 13616 IBAN Modulo-97 checksum valid (${N(acct).slice(0, 6)}…)`;
+        else {
+          bs = 'fail';
+          bm = 'IBAN Modulo-97 checksum failed';
+          need.push('Provided IBAN failed Modulo-97 checksum validation. Please verify your IBAN');
+        }
+      } else if (bc === 'IN') {
+        if (/^[A-Z]{4}0[A-Z0-9]{6}$/.test((f.bankCode || '').toUpperCase()) && /^\d{9,18}$/.test(acct)) {
+          bm = `Indian 11-char IFSC (${f.bankCode.toUpperCase()}) & account number valid`;
+        } else {
+          bs = 'fail';
+          bm = 'Invalid 11-char IFSC (5th char must be 0) or account number';
+          need.push('Provide a valid 11-character IFSC code (e.g. HDFC0001234) and 9–18 digit bank account number');
+        }
+      } else if (bc === 'US') {
+        if (abaOk(f.bankCode || '') && /^\d{4,17}$/.test(acct)) {
+          bm = `US ABA 9-digit routing checksum (${f.bankCode}) & account valid`;
+        } else {
+          bs = 'fail';
+          bm = 'ABA routing number failed 3-7-1 checksum or invalid account';
+          need.push('Provide a valid 9-digit US ABA routing number and account number');
+        }
+      } else {
+        bm = 'No country bank checksum rule for ' + bc;
+      }
+      if (f.country && bc !== f.country) {
+        if (bs === 'pass') bs = 'warn';
+        bm += ` · Cross-border bank (${bc} bank for ${f.country} entity)`;
+        need.push(`Provide a signed treasury letter explaining why bank account is in ${bc} while company is registered in ${f.country}`);
+        note.push(`Cross-border bank jurisdiction (${f.country} entity → ${bc} bank)`);
+      }
+      await addGate('5. Bank Checksum & Domicile', bs, bm);
+
+      // GATE 6: Corporate Contact & Website Domain Alignment
+      const dom = (f.email.split('@')[1] || '').toLowerCase().trim();
+      const web = (f.website || '').toLowerCase().replace(/^https?:\/\/(www\.)?/, '').split('/')[0].trim();
+      if (!dom) {
+        await addGate('6. Corporate Contact Domain', 'warn', 'Missing contact email domain');
+      } else if (FREE_EMAIL.test(f.email)) {
+        await addGate('6. Corporate Contact Domain', 'warn', `Free webmail domain (${dom}) not accepted for corporate onboarding`);
+        need.push(`Submit from an official corporate email (@${web || 'company.com'}) instead of free webmail (${dom})`);
+      } else if (web && dom !== web && !dom.endsWith('.' + web) && !web.endsWith('.' + dom)) {
+        await addGate('6. Corporate Contact Domain', 'warn', `Email domain (@${dom}) does not match website (${web})`);
+        need.push(`Contact email (@${dom}) does not match company website (${web}). Provide an email @${web}`);
+        note.push(`Email/website domain mismatch (@${dom} vs ${web})`);
+      } else {
+        await addGate('6. Corporate Contact Domain', 'pass', `Corporate email (@${dom}) aligned with website (${web || dom})`);
+      }
+
+      // GATE 7: Vendor Master Cross-Check
+      // Fixes Issue #2: Explicitly check if ex.status === 'REJECTED' so a rejected vendor CANNOT slip back in as a normal PENDING resubmission!
+      const tk = f.country + tid, bk = N(acct);
+      const other = Object.values(M).find(m => bk && m.bk === bk && m.tk !== tk);
+      const ex = M[tk];
+      let bankChange = false;
+
+      if (other) {
+        hard.push(`Bank account ${bk} is already registered to another vendor (${other.name}, ${other.id})`);
+        await addGate('7. Vendor Master Cross-Check', 'fail', `Bank account collision with ${other.name} (${other.id}) — shared-account fraud ring blocked`);
+      } else if (ex && ex.status === 'REJECTED') {
+        hard.push(`Vendor (${ex.id}) was previously REJECTED (${ex.rejectReason || 'Compliance block'}) — automatic re-onboarding blocked`);
+        await addGate('7. Vendor Master Cross-Check', 'fail', `Previously REJECTED vendor ${ex.id} attempted resubmission — blocked until Compliance Officer unblocks record`);
+      } else if (ex && ex.status === 'APPROVED') {
+        if (ex.bk === bk) {
+          hard.push(`Vendor is already active and APPROVED (${ex.id}) with identical tax ID and bank account`);
+          await addGate('7. Vendor Master Cross-Check', 'fail', `Duplicate submission: active vendor ${ex.id} already holds identical credentials`);
+        } else {
+          bankChange = true;
+          need.push('Signed bank-change mandate on letterhead + voided cheque for new account');
+          note.push(`BEC Guard: Active vendor ${ex.id} requested bank change (${ex.bk} → ${bk}). Mandatory out-of-band phone call-back required`);
+          await addGate('7. Vendor Master Cross-Check', 'warn', `Active vendor ${ex.id} submitted a NEW bank account — existing master record locked until call-back verification`);
+        }
+      } else if (ex && ex.status === 'PENDING') {
+        rev = ex.rev + 1;
+        await addGate('7. Vendor Master Cross-Check', 'info', `Resubmission matched to PENDING vendor ${ex.id} (Revision ${rev}) — re-evaluating open items`);
+      } else {
+        await addGate('7. Vendor Master Cross-Check', 'pass', 'New vendor — Tax ID and bank account are unique across Vendor Master');
+      }
+
+      // Compute Final Decision
+      const d = hard.length ? 'REJECTED' : need.length ? 'PENDING' : 'APPROVED';
+      const why =
+        d === 'REJECTED'
+          ? hard.join('; ') + '.'
+          : d === 'PENDING'
+          ? `${need.length} item(s) outstanding` + (note.length ? ` · Internal Flags: ${note.join('; ')}` : '')
+          : `All 7 compliance and checksum gates passed` + (rev > 1 ? ` on Revision ${rev}` : '') + '.';
+
+      // Update Vendor Master (Store REJECTED vendors too so they cannot slip back in!)
+      let vid = ex ? ex.id : nextVendorId();
+      if (d === 'APPROVED') {
+        M[tk] = { id: vid, name: f.legalName, country: f.country, tk, bk, status: 'APPROVED', rev, rejectReason: null };
+      } else if (d === 'PENDING' && !bankChange) {
+        M[tk] = { id: vid, name: f.legalName, country: f.country, tk, bk, status: 'PENDING', rev, rejectReason: null };
+      } else if (d === 'REJECTED' && !other && !(ex && ex.status === 'APPROVED')) {
+        M[tk] = { id: vid, name: f.legalName, country: f.country, tk, bk, status: 'REJECTED', rev, rejectReason: hard[0] };
+      }
+
+      const nm = f.legalName || 'Vendor';
+      const msg =
+        d === 'APPROVED'
+          ? `Hello ${nm},\n\nYour vendor onboarding is APPROVED (Vendor ID: ${vid}, Revision ${rev}). You may now submit invoices.`
+          : d === 'PENDING'
+          ? `Hello ${nm},\n\nThank you for your submission (${vid}, Revision ${rev}). To complete onboarding, please provide:\n\n` +
+            need.map((x, i) => `${i + 1}. ${x}`).join('\n')
+          : `Hello ${nm},\n\nWe are unable to approve your vendor onboarding submission due to compliance policy restrictions.`;
+
+      const runRec = {
+        id: H.length + 1,
+        at: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' }),
+        vid,
+        name: f.legalName || '—',
+        country: f.country,
+        tk,
+        bk,
+        d,
+        rev,
+        why,
+        msg,
+        bankChange,
+        internalNotes: note,
+        overrideBy: null
+      };
+      H.unshift(runRec);
+
+      $('gateStatus').textContent = `Done (${d})`;
+      $('vidBadge').textContent = `${vid} · Rev ${rev}`;
+      renderOut(runRec);
+      dash();
+    }
+
+    // ============================================================================
+    // 7. SAFEGUARDED HUMAN-IN-THE-LOOP (Fixes Issue #3 — Reason + Call-Back Checkbox)
+    // ============================================================================
+    function renderOut(r) {
+      const notesHtml =
+        r.internalNotes && r.internalNotes.length
+          ? `<div style="margin-bottom:8px">
+              <label style="color:var(--er)">🔒 Internal Compliance &amp; Fraud Notes (Hidden from Vendor Email)</label>
+              <pre style="border-color:var(--er);margin-bottom:4px">${r.internalNotes.map(n => '• ' + n).join('\n')}</pre>
+            </div>`
+          : '';
+
+      const hitlHtml =
+        r.d === 'PENDING'
+          ? `<div class="hitl-box">
+              <div style="font-weight:800;font-size:12.5px;margin-bottom:4px">
+                👤 Safeguarded Compliance Officer Override (${r.vid} · Rev ${r.rev})
+              </div>
+              <div class="sub" style="margin-bottom:7px">
+                Manual approval or rejection requires an auditable justification note${r.bankChange ? ' and mandatory out-of-band phone call-back confirmation' : ''}.
+              </div>
+              <label>Mandatory Audit Justification / Ticket Reference (min 8 chars)</label>
+              <input type="text" id="hitlReason_${r.id}" placeholder="e.g. Ticket #COMP-402: Verified tax cert & treasury letter">
+              ${
+                r.bankChange
+                  ? `<label style="display:flex;align-items:flex-start;gap:6px;margin-top:7px;color:var(--tx);cursor:pointer;font-size:11.5px">
+                      <input type="checkbox" id="hitlCallback_${r.id}" style="width:auto;margin-top:2px">
+                      <span><b>Mandatory BEC Call-Back Check:</b> I confirm I phoned the verified contact on file for <b>${r.name} (${r.vid})</b> and authenticated the new bank account (<code>${r.bk}</code>).</span>
+                    </label>`
+                  : ''
+              }
+              <div id="hitlErr_${r.id}" class="hitl-err"></div>
+              <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:8px">
+                <button type="button" class="ok-btn" style="margin:0" onclick="resolveOnboarding(${r.id},'APPROVED')">✓ Verify &amp; Approve</button>
+                <button type="button" class="er-btn" style="margin:0" onclick="resolveOnboarding(${r.id},'REJECTED')">✕ Reject &amp; Lock Vendor</button>
+              </div>
+            </div>`
+          : '';
+
+      $('out').innerHTML = `
+        <div class="dec-box ${r.d}">
+          <div style="display:flex;justify-content:space-between;font-size:11px;font-weight:700">
+            <span>DECISION STATUS</span>
+            <span class="mono">Run #${r.id} · ${r.vid} (Rev ${r.rev})</span>
+          </div>
+          <div class="dec-title">${r.d}</div>
+          <div style="margin-top:4px;font-size:12.5px">${r.why}</div>
+        </div>
+        ${notesHtml}
+        <label style="display:flex;justify-content:space-between">
+          <span>✉️ Automated Message to Vendor</span>
+          <span style="font-weight:400">External-safe communication</span>
+        </label>
+        <pre>${r.msg}</pre>
+        ${hitlHtml}
+      `;
+    }
+
+    window.resolveOnboarding = function (runId, newStatus) {
+      const rec = H.find(x => x.id === runId);
+      if (!rec || rec.d !== 'PENDING') return;
+
+      const reasonEl = $('hitlReason_' + runId);
+      const cbEl = $('hitlCallback_' + runId);
+      const errEl = $('hitlErr_' + runId);
+      const reason = (reasonEl ? reasonEl.value : '').trim();
+
+      if (reason.length < 8) {
+        if (errEl) {
+          errEl.style.display = 'block';
+          errEl.textContent = '⚠️ Safeguard blocked: Please enter an audit reason / ticket reference (at least 8 characters).';
+        }
+        if (reasonEl) reasonEl.focus();
+        return;
+      }
+
+      if (newStatus === 'APPROVED' && rec.bankChange && (!cbEl || !cbEl.checked)) {
+        if (errEl) {
+          errEl.style.display = 'block';
+          errEl.textContent = '⚠️ BEC Safeguard blocked: You must check the out-of-band phone call-back confirmation box before approving a bank account change.';
+        }
+        return;
+      }
+
+      if (newStatus === 'APPROVED') {
+        M[rec.tk] = {
+          id: rec.vid,
+          name: rec.name,
+          country: rec.country,
+          tk: rec.tk,
+          bk: rec.bk,
+          status: 'APPROVED',
+          rev: rec.rev,
+          rejectReason: null
+        };
+        rec.d = 'APPROVED';
+        rec.why = `Manually APPROVED by Officer [Note: "${reason}"]${rec.bankChange ? ' [Call-Back Verified]' : ''}`;
+        rec.msg = `Hello ${rec.name},\n\nFollowing compliance officer verification (${reason}), your vendor profile (${rec.vid}) is now APPROVED.`;
+      } else {
+        // Fix 2: Store REJECTED status in Vendor Master M[rec.tk] so subsequent resubmissions are caught!
+        M[rec.tk] = {
+          id: rec.vid,
+          name: rec.name,
+          country: rec.country,
+          tk: rec.tk,
+          bk: M[rec.tk] && rec.bankChange ? M[rec.tk].bk : rec.bk,
+          status: 'REJECTED',
+          rev: rec.rev,
+          rejectReason: `Manual Officer Reject: ${reason}`
+        };
+        rec.d = 'REJECTED';
+        rec.why = `Manually REJECTED & LOCKED by Officer [Note: "${reason}"]. Future resubmissions will be blocked.`;
+      }
+      renderOut(rec);
+      dash();
+    };
+
+    window.inspectRun = function (runId) {
+      const rec = H.find(x => x.id === runId);
+      if (rec) {
+        $('vidBadge').textContent = `${rec.vid} · Rev ${rec.rev}`;
+        renderOut(rec);
+      }
+    };
+
+    // ============================================================================
+    // 8. UI RENDERING, FILE UPLOADS & AUTO-RESET DEMO RUNNER
+    // ============================================================================
+    const dock = () => [...document.querySelectorAll('#docs input:checked')].map(i => i.value);
+    const getF = () => {
+      const o = Object.fromEntries(F.map(x => [x[0], $(x[0]).value]));
+      o.docText = $('docText').value;
+      return o;
+    };
+    function setF(o, d) {
+      F.forEach(x => ($(x[0]).value = o[x[0]] || ''));
+      $('docText').value = o.docText || '';
+      document.querySelectorAll('#docs input').forEach(i => (i.checked = d.includes(i.value)));
+    }
+
+    function dash() {
+      const c = d => H.filter(h => h.d === d).length;
+      $('k').innerHTML = `
+        <div class="kpi"><span class="sub">Total Reviews</span><b>${H.length}</b></div>
+        <div class="kpi"><span class="sub">Approved</span><b class="text-APPROVED">${c('APPROVED')}</b></div>
+        <div class="kpi"><span class="sub">Pending (Actionable)</span><b class="text-PENDING">${c('PENDING')}</b></div>
+        <div class="kpi"><span class="sub">Rejected (Locked)</span><b class="text-REJECTED">${c('REJECTED')}</b></div>
+      `;
+
+      $('m').innerHTML =
+        `<thead><tr><th>ID</th><th>Vendor</th><th>Ctry</th><th>Tax Key</th><th>Bank / IBAN</th><th>Status</th><th>Rev</th></tr></thead><tbody>` +
+        Object.values(M)
+          .map(
+            m => `<tr>
+              <td class="mono"><b>${m.id}</b></td>
+              <td>${m.name}</td>
+              <td class="mono">${m.country}</td>
+              <td class="mono">${m.tk}</td>
+              <td class="mono">${m.bk}</td>
+              <td><span class="b ${m.status}">${m.status}</span></td>
+              <td class="mono">Rev ${m.rev}</td>
+            </tr>`
+          )
+          .join('') +
+        `</tbody>`;
+
+      $('h').innerHTML =
+        `<thead><tr><th>#</th><th>Time</th><th>VID</th><th>Vendor</th><th>Rev</th><th>Status</th><th>Reason &amp; Safeguarded Action</th></tr></thead><tbody>` +
+        (H.length
+          ? H.map(
+              h => `<tr style="cursor:pointer" onclick="inspectRun(${h.id})">
+                <td class="mono">${h.id}</td>
+                <td class="mono">${h.at}</td>
+                <td class="mono"><b>${h.vid}</b></td>
+                <td>${h.name}</td>
+                <td class="mono">Rev ${h.rev}</td>
+                <td><span class="b ${h.d}">${h.d}</span></td>
+                <td style="white-space:normal;min-width:250px">
+                  ${h.why}
+                  ${h.d === 'PENDING' ? `<div style="margin-top:3px;font-size:11px;color:var(--ac);font-weight:600">→ Click row to open Safeguarded Override in Panel 3</div>` : ''}
+                </td>
+              </tr>`
+            ).join('')
+          : `<tr><td colspan="7" style="text-align:center;color:var(--mu);padding:18px">No reviews run in this session yet.</td></tr>`) +
+        `</tbody>`;
+    }
+
+    function resetAll() {
+      M = SEED();
+      H = [];
+      seq = 1001;
+      setF(CORE_SCENARIOS[0].fields, CORE_SCENARIOS[0].docs);
+      $('fileMsg').textContent = '';
+      $('gateStatus').textContent = 'Idle';
+      $('vidBadge').textContent = '—';
+      $('live').innerHTML = '<div class="sub" style="text-align:center;padding:60px 20px">Session reset to clean seed state (V-1000 Northwind Logistics).</div>';
+      $('out').innerHTML = '<div class="sub" style="text-align:center;padding:60px 20px">Ready for clean demo run.</div>';
+      dash();
+    }
+
+    // Build Form Inputs
+    $('form').innerHTML = F.map(x => {
+      const cls = x[3] ? ` class="${x[3]}"` : '';
+      if (x[2] === 's') {
+        return `<div${cls}><label>${x[1]}</label><select id="${x[0]}">${CC.map(c => `<option>${c}</option>`).join('')}</select></div>`;
+      }
+      return `<div${cls}><label>${x[1]}</label><input type="text" id="${x[0]}"></div>`;
+    }).join('');
+
+    $('docs').innerHTML = Object.entries(DL)
+      .map(([k, v]) => `<label><input type="checkbox" value="${k}" checked>${v}</label>`)
+      .join('');
+
+    function renderScenarioButtons(list, containerId, prefix) {
+      $(containerId).innerHTML = list
+        .map(
+          (s, i) => `
+          <button type="button" class="scen-btn" data-group="${prefix}" data-i="${i}">
+            <span style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap;pointer-events:none">${s.label}</span>
+            <span class="b ${s.badge}" style="pointer-events:none">${s.badge}</span>
+          </button>`
+        )
+        .join('');
+    }
+
+    renderScenarioButtons(CORE_SCENARIOS, 'coreScenarios', 'core');
+    renderScenarioButtons(EXTRA_SCENARIOS, 'extraScenarios', 'extra');
+
+    document.addEventListener('click', e => {
+      const btn = e.target.closest('button[data-group]');
+      if (!btn) return;
+      const list = btn.dataset.group === 'core' ? CORE_SCENARIOS : EXTRA_SCENARIOS;
+      const sc = list[Number(btn.dataset.i)];
+      if (sc) {
+        setF(sc.fields, sc.docs);
+        $('docMode').textContent = sc.label.split('·')[0].trim();
+        runReview();
+      }
+    });
+
+    $('runBtn').onclick = runReview;
+    $('resetBtn').onclick = resetAll;
+
+    // Fix 8: Auto-reset before running the 5 Core Demo Scenarios so order-dependent steps (2A -> 2B) always work cleanly
+    $('runCoreBtn').onclick = async () => {
+      resetAll();
+      for (let i = 0; i < CORE_SCENARIOS.length; i++) {
+        const sc = CORE_SCENARIOS[i];
+        setF(sc.fields, sc.docs);
+        $('docMode').textContent = `Core ${i + 1}/5`;
+        await runReview();
+        await sl(280);
+      }
+    };
+
+    $('dlSampleJson').onclick = () => {
+      const blob = new Blob([JSON.stringify(CORE_SCENARIOS[0], null, 2)], { type: 'application/json' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'sunrise_packaging_kyc_packet.json';
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      URL.revokeObjectURL(url);
+      $('fileMsg').textContent = 'Downloaded sunrise_packaging_kyc_packet.json';
+    };
+
+    // Real PDF.js & JSON File Upload Handler
+    async function handleUpload(file) {
+      if (!file) return;
+      $('fileMsg').textContent = `Reading ${file.name}…`;
+      try {
+        if (file.name.toLowerCase().endsWith('.json')) {
+          const obj = JSON.parse(await file.text());
+          const fields = obj.fields || obj;
+          const docs = obj.docs || ['incorp', 'tax', 'bank'];
+          setF(fields, docs);
+          $('docMode').textContent = 'JSON Packet';
+          $('fileMsg').textContent = `✓ Loaded JSON packet (${file.name})`;
+          await runReview();
+        } else if (file.name.toLowerCase().endsWith('.pdf')) {
+          if (typeof pdfjsLib === 'undefined') throw new Error('PDF.js unavailable offline — paste text directly into the Document Scanner box');
+          pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+          const pdf = await pdfjsLib.getDocument({ data: await file.arrayBuffer() }).promise;
+          let txt = '';
+          for (let p = 1; p <= pdf.numPages; p++) {
+            const c = await (await pdf.getPage(p)).getTextContent();
+            txt += c.items.map(i => i.str).join(' ') + '\n';
+          }
+          $('docText').value = txt.trim();
+          $('docMode').textContent = 'PDF Scanned';
+          $('fileMsg').textContent = `✓ Extracted ${txt.length} chars from ${file.name} into live scanner`;
+          await runReview();
+        } else {
+          $('docText').value = (await file.text()).trim();
+          $('fileMsg').textContent = `✓ Loaded text from ${file.name}`;
+          await runReview();
+        }
+      } catch (err) {
+        $('fileMsg').textContent = 'Upload notice: ' + err.message;
+      }
+    }
+
+    $('fileIn').onchange = e => {
+      if (e.target.files[0]) handleUpload(e.target.files[0]);
+      e.target.value = '';
+    };
+
+    const dz = $('dz');
+    dz.ondragover = e => { e.preventDefault(); dz.classList.add('drag'); };
+    dz.ondragleave = () => dz.classList.remove('drag');
+    dz.ondrop = e => {
+      e.preventDefault();
+      dz.classList.remove('drag');
+      if (e.dataTransfer && e.dataTransfer.files[0]) handleUpload(e.dataTransfer.files[0]);
+    };
+
+    // Initialize clean session
+    resetAll();
+  </script>
+</body>
+</html>
